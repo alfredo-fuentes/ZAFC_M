@@ -7,8 +7,9 @@
     sizeCategory: #S,
     dataClass: #MIXED
 }
-define view entity ZI_TRAVEL_AFC_M
+define root view entity ZI_TRAVEL_AFC_M
   as select from ztravel_afc_m
+  composition [0..*]  of  ZI_BOOKING_AFC_M as _Booking
   association [0..1] to /DMO/I_Agency            as _Agency   on $projection.AgencyId = _Agency.AgencyID
   association [0..1] to /DMO/I_Customer          as _Customer on $projection.CustomerId = _Customer.CustomerID
   association [0..1] to I_Currency               as _Currency on $projection.CurrencyCode = _Currency.Currency
@@ -30,6 +31,7 @@ define view entity ZI_TRAVEL_AFC_M
       created_at      as CreatedAt,
       last_changed_by as LastChangedBy,
       last_changed_at as LastChangedAt,
+      _Booking,
       _Agency,
       _Customer,
       _Currency,
