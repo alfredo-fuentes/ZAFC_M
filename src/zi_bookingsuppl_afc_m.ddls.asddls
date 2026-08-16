@@ -11,6 +11,7 @@ define view entity ZI_BOOKINGSUPPL_AFC_M as select from zbooksupp_afc_m
   association to parent ZI_BOOKING_AFC_M as _Booking
   on $projection.TravelId = _Booking.TravelId
   and $projection.BookingId = _Booking.BookingId
+association [1..1] to ZI_TRAVEL_AFC_M as _Travel on $projection.TravelId = _Travel.TravelId
 association [1..1] to /DMO/I_Supplement  as _Supplement        on  $projection.SupplementId = _Supplement.SupplementID
 association [1..*] to /DMO/I_SupplementText  as _SupplementText        on  $projection.SupplementId = _SupplementText.SupplementID
 {
@@ -22,6 +23,7 @@ association [1..*] to /DMO/I_SupplementText  as _SupplementText        on  $proj
     price as Price,
     currency_code as CurrencyCode,
     last_changed_at as LastChangedAt,
+    _Travel,
     _Booking,
     _Supplement,
     _SupplementText
