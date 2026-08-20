@@ -1,13 +1,15 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Bookin Suppl. Projection view managed'
-@Metadata.ignorePropagatedAnnotations: true
+@Metadata.allowExtensions: true
 define view entity ZC_BOOKINGSUPPL_AFC_M 
 as projection on ZI_BOOKINGSUPPL_AFC_M
 {
     key TravelId,
     key BookingId,
     key BookingSupplementId,
+    @ObjectModel.text.element: [ 'SupplementDesc' ]
     SupplementId,
+    _SupplementText.Description as SupplementDesc: localized,
     @Semantics.amount.currencyCode: 'CurrencyCode'
     Price,
     CurrencyCode,
