@@ -1,0 +1,5 @@
+CLASS zcl_bp_booking_afc_m DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zi_travel_afc_m.
+ENDCLASS.
+
+CLASS zcl_bp_booking_afc_m IMPLEMENTATION.
+ENDCLASS.
