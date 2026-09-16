@@ -7,11 +7,12 @@ persistent table ztravel_afc_m
 lock master
 authorization master ( instance )
 etag master LastChangedAt
+early numbering
 {
   create ( authorization : global );
   update;
   delete;
-//  field ( readonly ) TravelId;
+  field ( readonly ) TravelId;
   association _Booking { create; }
   mapping for ztravel_afc_m
     {
@@ -38,10 +39,11 @@ persistent table zbooking_afc_m
 lock dependent by _Travel
 authorization dependent by _Travel
 etag master LastChangedAt
+early numbering
 {
   update;
   delete;
-  field ( readonly ) TravelId;   //, BookingId;
+  field ( readonly ) TravelId, BookingId;
   association _Travel;
   association _BookingSuppl { create; }
   mapping for zbooking_afc_m
@@ -66,10 +68,11 @@ persistent table zbooksupp_afc_m
 lock dependent by _Travel
 authorization dependent by _Travel
 etag master LastChangedAt
+early numbering
 {
   update;
   delete;
-  field ( readonly ) TravelId, BookingId;  //, BookingSupplementId;
+  field ( readonly ) TravelId, BookingId, BookingSupplementId;
   association _Travel;
   association _Booking;
   mapping for zbooksupp_afc_m
