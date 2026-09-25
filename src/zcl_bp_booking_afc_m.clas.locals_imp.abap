@@ -3,13 +3,70 @@ CLASS lhc_zi_booking_afc_m DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
 
     METHODS earlynumbering_cba_Bookingsupp FOR NUMBERING
-      entities FOR CREATE ZI_BOOKING_AFC_M\_Bookingsuppl.
+       entities FOR CREATE zi_booking_afc_m\_Bookingsuppl.
 
 ENDCLASS.
 
 CLASS lhc_zi_booking_afc_m IMPLEMENTATION.
 
   METHOD earlynumbering_cba_Bookingsupp.
+    DATA: max_booking_supp_id TYPE /dmo/booking_supplement_id.
+
+
+    READ ENTITIES OF zi_travel_afc_m IN LOCAL MODE
+    ENTITY zi_booking_afc_m BY \_BookingSuppl
+    FROM CORRESPONDING #( entities )
+    LINK DATA(booking_supplements).
+
+    "loop over all unique tky (TravelId  + BookingID)
+    LOOP AT entities ASSIGNING FIELD-SYMBOL(<booking_group>)
+    GROUP BY <booking_group>-%tky.
+
+      "get highets booking suppl id from bookings belonging to booking
+      max_booking_supp_id = REDUCE #( INIT max = CONV /dmo/booking_supplement_id( '0' )
+                                 FOR booksuppl IN booking_supplements USING KEY entity
+                                 WHERE ( source-TravelId = <booking_group>-TravelId
+                                    AND  source-BookingId = <booking_group>-BookingId )
+                                 NEXT max = COND /dmo/booking_supplement_id(  WHEN booksuppl-target-BookingSupplementId > max
+                                                                      THEN booksuppl-target-BookingSupplementId
+                                                                      ELSE max ) ).
+
+      "get highets assigned booking suppl id from incoming entities
+      max_booking_supp_id = REDUCE #( INIT max = max_booking_supp_id
+                                 FOR entity IN entities USING KEY entity
+                                 WHERE ( TravelId = <booking_group>-TravelId
+                                    AND  BookingId = <booking_group>-BookingId )
+                                 FOR target IN entity-%target
+                                 NEXT max = COND /dmo/booking_supplement_id(  WHEN target-BookingSupplementId > max
+                                                                      THEN target-BookingSupplementId
+                                                                      ELSE max ) ).
+
+      "loop over all entries in entities with the same TravelID and BookingId
+      LOOP AT entities ASSIGNING FIELD-SYMBOL(<booking>)
+        USING KEY entity
+        WHERE TravelId = <booking_group>-TravelId
+        AND BookingId = <booking_group>-BookingId.
+
+        "assign new booking_supplements-ids
+        LOOP AT <booking>-%target ASSIGNING FIELD-SYMBOL(<booksuppl_wo_numbers>).
+
+          APPEND CORRESPONDING #( <booksuppl_wo_numbers> ) TO mapped-zi_bookingsuppl_afc_m ASSIGNING FIELD-SYMBOL(<mapped_booksuppl>).
+
+          IF <booksuppl_wo_numbers>-BookingSupplementId IS INITIAL.
+
+            max_booking_supp_id += 1.
+            <mapped_booksuppl>-BookingSupplementId = max_booking_supp_id.
+
+          ENDIF.
+
+        ENDLOOP.
+
+      ENDLOOP.
+
+
+    ENDLOOP.
+
+
   ENDMETHOD.
 
 ENDCLASS.
