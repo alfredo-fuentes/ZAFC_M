@@ -9,10 +9,17 @@ authorization master ( instance )
 etag master LastChangedAt
 early numbering
 {
+  field ( readonly ) TravelId;
+  action acceptTravel result[1] $self;
+  action rejectTravel result[1] $self;
+
+  factory action copyTravel [1];
+
+  internal action recalcTotPrice;
+
   create ( authorization : global );
   update;
   delete;
-  field ( readonly ) TravelId;
   association _Booking { create; }
   mapping for ztravel_afc_m
     {

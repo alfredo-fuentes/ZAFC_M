@@ -6,6 +6,17 @@ CLASS lhc_ZI_TRAVEL_AFC_M DEFINITION INHERITING FROM cl_abap_behavior_handler.
 
     METHODS get_global_authorizations FOR GLOBAL AUTHORIZATION
       REQUEST requested_authorizations FOR zi_travel_afc_m RESULT result.
+    METHODS accepttravel FOR MODIFY
+      keys FOR ACTION zi_travel_afc_m~accepttravel RESULT result.
+
+    METHODS copytravel FOR MODIFY
+      keys FOR ACTION zi_travel_afc_m~copytravel.
+
+    METHODS recalctotprice FOR MODIFY
+      keys FOR ACTION zi_travel_afc_m~recalctotprice.
+
+    METHODS rejecttravel FOR MODIFY
+      keys FOR ACTION zi_travel_afc_m~rejecttravel RESULT result.
 
     METHODS earlynumbering_cba_booking FOR NUMBERING
        entities FOR CREATE zi_travel_afc_m\_booking.
@@ -132,6 +143,18 @@ CLASS lhc_ZI_TRAVEL_AFC_M IMPLEMENTATION.
     ENDLOOP.
 
 
+  ENDMETHOD.
+
+  METHOD acceptTravel.
+  ENDMETHOD.
+
+  METHOD copyTravel.
+  ENDMETHOD.
+
+  METHOD recalcTotPrice.
+  ENDMETHOD.
+
+  METHOD rejectTravel.
   ENDMETHOD.
 
 ENDCLASS.
